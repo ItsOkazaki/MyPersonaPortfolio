@@ -104,29 +104,35 @@ function ResumeTransition() {
     { top: "65vh", color: "#0f1760", delay: 0.15 },
   ];
 
-  return cards.map((card, i) => (
-    <motion.div
-      key={i}
-      style={{
-        position: "fixed",
-        left: "-6vw",
-        top: card.top,
-        width: "78vw",
-        height: "14vh",
-        background: card.color,
-        zIndex: 999 - i,
-        clipPath: "polygon(0 0, 97% 0, 100% 100%, 3% 100%)",
-      }}
-      initial={{ x: -900, opacity: 1 }}
-      animate={{ x: [-900, 30, 0, 900] }}
-      transition={{
-        duration: 0.6,
-        delay: card.delay,
-        times: [0, 0.48, 0.7, 1],
-        ease: [0.76, 0, 0.24, 1],
-      }}
-    />
-  ));
+  return (
+    <AnimatePresence>
+      {cards.map((card, i) => (
+        <motion.div
+          key={i}
+          style={{
+            position: "fixed",
+            left: "-6vw",
+            top: card.top,
+            width: "120vw",
+            height: "14vh",
+            background: card.color,
+            zIndex: 999 - i,
+            clipPath: "polygon(0 0, 97% 0, 100% 100%, 3% 100%)",
+            pointerEvents: 'none'
+          }}
+          initial={{ x: "-110%" }}
+          animate={{ x: ["-110%", "0%", "0%", "110%"] }}
+          exit={{ opacity: 0 }}
+          transition={{
+            duration: 1.2,
+            delay: card.delay,
+            times: [0, 0.3, 0.7, 1],
+            ease: [0.76, 0, 0.24, 1],
+          }}
+        />
+      ))}
+    </AnimatePresence>
+  );
 }
 
 function TransitionOverlay({ variant }) {

@@ -101,8 +101,10 @@ export default function AboutMe() {
 
   return (
     <div id="menu-screen" className="relative w-full h-screen overflow-hidden bg-black">
-      <video src={bgVideo} autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover opacity-40" />
+      <video src={bgVideo} autoPlay loop playsInline className="absolute inset-0 w-full h-full object-cover opacity-40" />
       
+
+
       {revealed && <div key={`dim-${active}`} className="sc-dim" />}
       
       {revealed && (
@@ -319,11 +321,12 @@ export default function AboutMe() {
           text-align: center;
         }
         .sc-reveal-upper-line {
-          font-family: 'Montserrat', sans-serif;
-          font-weight: 300;
-          font-size: 20px;
-          letter-spacing: 0.5px;
+          font-family: var(--font-anton), sans-serif;
+          font-style: italic;
+          font-size: 32px;
+          letter-spacing: 1px;
           line-height: 1.15;
+          text-transform: uppercase;
         }
         .sc-reveal-lower-bar {
           position: absolute;
@@ -331,18 +334,17 @@ export default function AboutMe() {
           right: 0;
           width: 48%;
           height: 20%;
-          background: rgba(0, 0, 0, 0.92);
+          background: #c4001a;
           clip-path: polygon(0 0, 100% 0, calc(100% - 22px) 100%, 0 100%);
           box-shadow: 0 0 0 1px rgba(255,255,255,0.06);
           display: flex;
           align-items: center;
           justify-content: flex-start;
           color: #fff;
-          font-family: 'Montserrat', sans-serif;
-          font-weight: 300;
-          font-size: 22px;
-          letter-spacing: 0.4px;
-          text-transform: lowercase;
+          font-family: var(--font-bebas), sans-serif;
+          font-size: 28px;
+          letter-spacing: 2px;
+          text-transform: uppercase;
           padding-left: 22px;
         }
 

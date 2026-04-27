@@ -17,7 +17,6 @@ export default function Home() {
         src={menuVideo} 
         autoPlay 
         loop 
-        muted 
         playsInline 
         className="absolute inset-0 w-full h-full object-cover opacity-40"
       />

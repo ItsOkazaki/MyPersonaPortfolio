@@ -4,11 +4,13 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-// Assets paths - Place these files in public/assets/
+// Assets paths
 const char1 = "/assets/char1.png";
 const char2 = "/assets/char2.png";
 const char3 = "/assets/char3.png";
-const bgVideo = "/assets/main1.mp4"; // Using main1 as fallback since main4 was not in user's list
+const bgVideo = "/assets/main1.mp4";
+const icon3 = "/assets/icon3.png";
+const newsign = "/assets/newsign.png";
 
 const CHARS = [char1, char2, char3];
 
@@ -38,6 +40,7 @@ export default function ProjectsP3({ src }) {
             handle: repo.language || "CODE",
             href: repo.html_url,
             icon: "📂",
+            stars: repo.stargazers_count,
             stats: [
               { tag: "STR", value: repo.stargazers_count, color: "#4a8fff" },
               { tag: "FORK", value: repo.forks_count, color: "#bf94ff" },
@@ -74,26 +77,48 @@ export default function ProjectsP3({ src }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [active, router, revealed, projects]);
 
-  if (projects.length === 0) return <div className="bg-black w-full h-screen flex items-center justify-center font-[family-name:var(--font-bebas)] text-4xl text-white tracking-widest">ACCESSING ARCHIVES...</div>;
+  if (projects.length === 0) return <div className="bg-black w-full h-screen flex items-center justify-center font-[family-name:var(--font-bebas)] text-4xl text-white tracking-widest uppercase">Accessing Archives...</div>;
+
+  const current = projects[active];
 
   return (
     <div id="menu-screen" className="relative w-full h-screen overflow-hidden bg-black">
-      <video src={src || bgVideo} autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover opacity-40" />
+      <video src={src || bgVideo} autoPlay loop playsInline className="absolute inset-0 w-full h-full object-cover opacity-40" />
       
+
+
+      {/* Top Right Info Bar */}
+      <div className="absolute top-24 right-10 z-[100] transition-all duration-300 transform scale-90 origin-top-right">
+        <div className="relative bg-white min-w-[450px] h-[60px] shadow-[10px_10px_0_rgba(0,0,0,0.5)] overflow-hidden">
+           <div className="absolute top-0 left-0 right-0 h-[8px] bg-[#c4001a] z-10" />
+           <div className="flex items-center h-full px-6 gap-5 pt-[8px]">
+              <img src={newsign} className="h-7 object-contain" alt="" />
+              <img src={icon3} className="h-9 object-contain" alt="" />
+              <span className="flex-1 font-[family-name:var(--font-bebas)] text-3xl text-black tracking-widest truncate uppercase">
+                {current.label}
+              </span>
+              <div className="bg-black text-white px-6 py-2 flex items-center gap-3">
+                 <span className="text-[#e8c100] font-[family-name:var(--font-bebas)] text-2xl">★</span>
+                 <span className="font-[family-name:var(--font-anton)] text-2xl italic leading-none">{current.stars}</span>
+              </div>
+           </div>
+        </div>
+      </div>
+
       {revealed && <div className="sc-dim" />}
       
       {revealed && (
         <div className={`sc-reveal-panel mounted`}>
           <div className="sc-reveal-upper-bar">
-            {projects[active].reveal.upper.map((line) => (
+            {current.reveal.upper.map((line) => (
               <div className="sc-reveal-upper-line" key={line}>{line}</div>
             ))}
           </div>
-          <div className="sc-reveal-lower-bar" onClick={() => window.open(projects[active].href, "_blank")}>
+          <div className="sc-reveal-lower-bar" onClick={() => window.open(current.href, "_blank")}>
              GO TO REPOSITORY ◄
           </div>
           <div className="absolute top-[65%] left-10 right-10 text-black font-[family-name:var(--font-bebas)] text-2xl tracking-widest leading-relaxed">
-            {projects[active].reveal.lower}
+            {current.reveal.lower}
           </div>
         </div>
       )}
@@ -118,15 +143,31 @@ export default function ProjectsP3({ src }) {
               <img className="sc-char" src={CHARS[i % CHARS.length]} alt="" />
               <div className="sc-bar-fill" />
               <div className="sc-bar-shade" />
-              <div className="sc-bar-content relative z-10 h-full flex items-center justify-between px-5">
+              <div className="sc-bar-content relative z-10 h-full flex items-center px-5">
                 <div className="sc-role">{ROLES[i % ROLES.length].text}</div>
-                <div className="flex-1 flex justify-center">
-                   <div className="sc-label">{item.label}</div>
+                <div className="flex-1 flex justify-center px-10">
+                   <div className="sc-label truncate w-full text-center">{item.label}</div>
                 </div>
-                <div className="sc-stats">
+                <div className="sc-stats flex items-center gap-6">
+                  <div className="flex gap-2 mr-6">
+                    {item.handle && (
+                      <span 
+                        className="bg-[#c4001a] text-white px-4 py-0.5 border-l-[3px] border-white font-[family-name:var(--font-anton)] text-[18px] italic tracking-wider shadow-[4px_4px_0_rgba(0,0,0,0.8)] leading-none"
+                        style={{ clipPath: 'polygon(0% 0%, 100% 10%, 96% 100%, 4% 90%)' }}
+                      >
+                        <span className="uppercase">{item.handle}</span>
+                      </span>
+                    )}
+                  </div>
                   {item.stats.map(s => (
-                    <div key={s.tag} className="flex flex-col">
-                      <span className="sc-stat-num">{s.value}</span>
+                    <div key={s.tag} className="flex flex-col items-start gap-1">
+                      <div className="flex items-center gap-2">
+                        <span className="sc-stat-tag px-2 py-0.5 border border-current text-[10px] leading-none" style={{ color: s.color }}>{s.tag}</span>
+                        <span className="sc-stat-num font-bold">{s.value}</span>
+                      </div>
+                      <div className="w-16 h-1 bg-black/30 overflow-hidden">
+                        <div className="h-full bg-white" style={{ width: '60%', backgroundColor: s.color }} />
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -175,9 +216,9 @@ export default function ProjectsP3({ src }) {
         }
         .sc-role {
           font-family: var(--font-anton); font-size: 50px; color: #fff;
-          transform: rotate(-30deg); position: absolute; left: 10px; z-index: 5;
+          transform: rotate(-30deg); flex-shrink: 0;
         }
-        .sc-label { font-family: var(--font-bebas); font-size: 28px; color: #fff; transition: color 0.2s; }
+        .sc-label { font-family: var(--font-bebas); font-size: 32px; color: #fff; transition: color 0.2s; letter-spacing: 2px; }
         .sc-bar-outer.active .sc-label { color: #111; }
         .sc-char {
           position: absolute; left: 110px; top: 0; height: 100%; z-index: 3;
@@ -196,11 +237,11 @@ export default function ProjectsP3({ src }) {
           position: absolute; top: 10%; width: 100%; height: 40%; background: #000;
           display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff;
         }
-        .sc-reveal-upper-line { font-family: var(--font-anton); font-size: 32px; letter-spacing: 2px; }
+        .sc-reveal-upper-line { font-family: var(--font-anton); font-style: italic; font-size: 42px; letter-spacing: 2px; text-transform: uppercase; }
         .sc-reveal-lower-bar {
           position: absolute; top: 58%; right: 0; width: 48%; height: 15%; background: #c4001a;
           display: flex; align-items: center; justify-content: center; color: #fff; cursor: pointer;
-          font-family: var(--font-bebas); font-size: 24px;
+          font-family: var(--font-bebas); font-size: 28px; letter-spacing: 2px;
         }
 
         .sc-main-portrait-shell {

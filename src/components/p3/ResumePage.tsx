@@ -99,7 +99,9 @@ export default function ResumePage({ src }) {
 
   return (
     <div id="menu-screen" className="relative w-full h-screen overflow-hidden">
-      <video src={src} autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover" />
+      <video src={src} autoPlay loop playsInline className="absolute inset-0 w-full h-full object-cover" />
+      
+
       <div className="resume-entry-mask absolute inset-0 z-10 overflow-hidden bg-[#0047FF] pointer-events-none" aria-hidden="true">
         <video className="absolute inset-0 w-full h-full object-cover" src={src} autoPlay loop muted playsInline />
       </div>
