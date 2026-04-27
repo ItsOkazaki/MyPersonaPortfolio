@@ -4,12 +4,13 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-// Assets paths
+// Assets paths verified
 const char1 = "/assets/char1.png";
 const char2 = "/assets/char2.png";
 const char3 = "/assets/char3.png";
 const icon1 = "/assets/icon1.png";
 const newsign = "/assets/newsign.png";
+const bgVideo = "/assets/main1.mp4";
 
 const CHARS = [char1, char2, char3];
 
@@ -43,8 +44,6 @@ const ITEMS = [
 export default function Socials({ src }) {
   const [active, setActive]               = useState(0);
   const [mounted, setMounted]             = useState(false);
-  const [activeInfoBar, setActiveInfoBar] = useState(0);
-  const [focus, setFocus]                 = useState("left");
   const router = useRouter();
 
   useEffect(() => {
@@ -54,43 +53,36 @@ export default function Socials({ src }) {
 
   useEffect(() => {
     const onKey = (e) => {
-      if (focus === "left") {
-        if (e.key === "ArrowUp")    setActive(i => Math.max(0, i - 1));
-        if (e.key === "ArrowDown")  setActive(i => Math.min(ITEMS.length - 1, i + 1));
-        if (e.key === "ArrowRight") { setFocus("right"); setActiveInfoBar(0); }
-        if (e.key === "Enter")      window.open(ITEMS[active].href, "_blank");
-      } else {
-        const barCount = ITEMS[active].bars;
-        if (e.key === "ArrowUp")   setActiveInfoBar(i => Math.max(0, i - 1));
-        if (e.key === "ArrowDown") setActiveInfoBar(i => Math.min(barCount - 1, i + 1));
-        if (e.key === "ArrowLeft") setFocus("left");
-        if (e.key === "Enter")     window.open(ITEMS[active].href, "_blank");
-      }
-      if ((e.key === "ArrowLeft" && focus === "left") || e.key === "Escape" || e.key === "Backspace") router.back();
+      if (e.key === "ArrowUp")    setActive(i => Math.max(0, i - 1));
+      if (e.key === "ArrowDown")  setActive(i => Math.min(ITEMS.length - 1, i + 1));
+      if (e.key === "Enter" || e.key === "ArrowRight") window.open(ITEMS[active].href, "_blank");
+      if (e.key === "ArrowLeft" || e.key === "Escape" || e.key === "Backspace") router.back();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [active, router, focus, activeInfoBar]);
+  }, [active, router]);
 
   const current = ITEMS[active];
 
   return (
     <div id="menu-screen" className="relative w-full h-screen overflow-hidden bg-black">
-      <video src={src} autoPlay loop playsInline className="absolute inset-0 w-full h-full object-cover opacity-60" />
+      <video src={src || bgVideo} autoPlay loop playsInline className="absolute inset-0 w-full h-full object-cover opacity-60" />
       
-      {/* Top Right Info Bar */}
-      <div className="absolute top-24 right-10 z-[100] transition-all duration-300 transform scale-90 origin-top-right">
-        <div className="relative min-w-[450px]">
-           {/* Hanging "NEW" icon */}
-           <img src={newsign} className="absolute -top-4 -left-4 w-10 h-10 object-contain z-[110] transform -rotate-12" alt="" />
+      {/* Top Right Status Bar Area */}
+      <div className="absolute top-20 right-10 z-[100] transition-all duration-300 transform scale-90 origin-top-right flex flex-col items-end gap-4">
+        <div className="relative min-w-[500px]">
+           {/* Hanging "NEW" icon - explicitly constrained size */}
+           <div className="absolute -top-10 -left-8 z-[110] transform -rotate-12 w-24 h-12">
+              <img src={newsign} className="w-full h-full object-contain" alt="" />
+           </div>
            
-           <div className="relative bg-white h-[60px] shadow-[10px_10px_0_rgba(0,0,0,0.5)] overflow-hidden">
-              <div className="absolute top-0 left-0 right-0 h-[8px] bg-[#c4001a] z-10" />
-              <div className="flex items-center h-full px-6 gap-5 pt-[8px]">
-                 <img src={icon1} className="h-9 object-contain" alt="" />
+           <div className="relative bg-white h-[64px] shadow-[12px_12px_0_rgba(0,0,0,0.5)] border-t-[6px] border-[#c4001a]">
+              <div className="flex items-center h-full px-6 gap-6">
+                 <img src={icon1} className="h-10 w-auto object-contain" alt="" />
                  <span className="flex-1 font-[family-name:var(--font-bebas)] text-3xl text-black tracking-widest truncate uppercase">
                    {current.label}
                  </span>
+
                  <div className="bg-black text-white px-6 py-2 flex items-center gap-3">
                     <span className="text-[#4a8fff] font-[family-name:var(--font-bebas)] text-2xl">🌐</span>
                     <span className="font-[family-name:var(--font-anton)] text-2xl italic leading-none">{current.handle}</span>
@@ -111,11 +103,13 @@ export default function Socials({ src }) {
           >
             <div className="sc-bar-red" />
             <div className="sc-bar">
-              <img className="sc-char" src={CHARS[i]} alt="" />
+              {/* Internal bouncing newsign removed to favor the hanging one, or we can keep both for flair */}
+              <img src={newsign} className="absolute top-1 left-2 h-5 object-contain z-20 animate-bounce" alt="" />
+              <img className="sc-char" src={CHARS[i % CHARS.length]} alt="" />
               <div className="sc-bar-fill" />
               <div className="sc-bar-shade" />
               <div className="sc-bar-content relative z-10 h-full flex items-center px-5">
-                <div className="sc-role">{ROLES[i].text}</div>
+                <div className="sc-role">{ROLES[i % ROLES.length].text}</div>
                 <div className="flex-1 flex justify-center px-10">
                    <div className="sc-label truncate w-full text-center">{item.label}</div>
                 </div>
@@ -138,19 +132,19 @@ export default function Socials({ src }) {
         ))}
       </div>
 
-      {mounted && Array.from({ length: ITEMS[active].bars }).map((_, i) => (
+      {/* Right Side Info Bars */}
+      {mounted && Array.from({ length: current.bars }).map((_, i) => (
         <div
           key={`info-${active}-${i}`}
-          className={`sc-info-bar-wrap ${activeInfoBar === i ? "scale-105" : "opacity-80"}`}
-          style={{ top: `${200 + i * 65}px`, position: 'fixed', right: '40px', left: 'auto', width: '380px' }}
-          onMouseEnter={() => setActiveInfoBar(i)}
-          onClick={() => window.open(ITEMS[active].href, "_blank")}
+          className={`scale-105 opacity-100 transition-all duration-300`}
+          style={{ top: `${220 + i * 65}px`, position: 'fixed', right: '40px', left: 'auto', width: '380px', zIndex: 100 }}
+          onClick={() => window.open(current.href, "_blank")}
         >
-          <div className="sc-info-bar bg-white rounded-lg p-1 shadow-xl h-14 flex items-center">
+          <div className="bg-white rounded-lg p-1 shadow-xl h-14 flex items-center">
              <div className="flex items-center h-full w-full px-4 gap-4 bg-white rounded-md overflow-hidden border-t-4 border-[#c4001a]">
                 <img src={current.barIcon} className="w-8 h-8 object-contain" alt="" />
-                <span className="sc-info-bar-text font-[family-name:var(--font-bebas)] text-black text-xl tracking-widest truncate">{ITEMS[active].links[i]}</span>
-                <div className="ml-auto bg-[#c4001a] text-white px-4 py-1 font-[family-name:var(--font-bebas)] text-lg tracking-widest skew-x-[-12deg]">
+                <span className="flex-1 font-[family-name:var(--font-bebas)] text-black text-xl tracking-widest truncate">{current.links[i]}</span>
+                <div className="bg-[#c4001a] text-white px-4 py-1 font-[family-name:var(--font-bebas)] text-lg tracking-widest skew-x-[-12deg]">
                    <span className="inline-block skew-x-[12deg]">OPEN</span>
                 </div>
              </div>
@@ -159,8 +153,8 @@ export default function Socials({ src }) {
       ))}
 
       <div className={`sc-footer mounted`}>
-        <div className="sc-footer-row"><span className="sc-footer-key">↑↓</span><span>SELECT</span></div>
-        <div className="sc-footer-row"><span className="sc-footer-key">↵</span><span>OPEN</span></div>
+        <div className="sc-footer-row"><span className="sc-footer-key">↑↓</span><span>SELECT NETWORK</span></div>
+        <div className="sc-footer-row"><span className="sc-footer-key">↵</span><span>OPEN PROFILE</span></div>
         <div className="sc-footer-row"><span className="sc-footer-key">ESC</span><span>BACK</span></div>
       </div>
 
@@ -206,8 +200,6 @@ export default function Socials({ src }) {
         .sc-stat-num { font-family: var(--font-bebas); font-size: 26px; color: #fff; }
         .sc-bar-outer.active .sc-stat-num { color: #111; }
         
-        .sc-info-bar-wrap { z-index: 50; }
-
         .sc-footer {
           position: fixed; bottom: 20px; right: 28px; display: flex; flex-direction: column; align-items: flex-end; gap: 5px; z-index: 14;
         }
