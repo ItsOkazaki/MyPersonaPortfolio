@@ -25,6 +25,7 @@ export default function ProjectsP3({ src }) {
   const [mounted, setMounted] = useState(false);
   const [revealed, setRevealed] = useState(false);
   const [projects, setProjects] = useState([]);
+  const [activeInfoBar, setActiveInfoBar] = useState(0);
   const router = useRouter();
 
   useEffect(() => {
@@ -63,19 +64,12 @@ export default function ProjectsP3({ src }) {
     const onKey = (e) => {
       if (e.key === "ArrowUp") setActive(i => Math.max(0, i - 1));
       if (e.key === "ArrowDown") setActive(i => Math.min(projects.length - 1, i + 1));
-      if (e.key === "Enter" || e.key === "ArrowRight") setRevealed(true);
-      if (e.key === "ArrowLeft") {
-        if (revealed) setRevealed(false);
-        else router.back();
-      }
-      if (e.key === "Escape" || e.key === "Backspace") {
-        if (revealed) setRevealed(false);
-        else router.back();
-      }
+      if (e.key === "Enter" || e.key === "ArrowRight") window.open(projects[active].href, "_blank");
+      if (e.key === "ArrowLeft" || e.key === "Escape" || e.key === "Backspace") router.back();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [active, router, revealed, projects]);
+  }, [active, router, projects]);
 
   if (projects.length === 0) return <div className="bg-black w-full h-screen flex items-center justify-center font-[family-name:var(--font-bebas)] text-4xl text-white tracking-widest uppercase">Accessing Archives...</div>;
 
@@ -85,28 +79,19 @@ export default function ProjectsP3({ src }) {
     <div id="menu-screen" className="relative w-full h-screen overflow-hidden bg-black">
       <video src={src || bgVideo} autoPlay loop playsInline className="absolute inset-0 w-full h-full object-cover opacity-40" />
       
-
-
       {/* Top Right Info Bar */}
       <div className="absolute top-24 right-10 z-[100] transition-all duration-300 transform scale-90 origin-top-right">
         <div className="relative min-w-[450px]">
            {/* Hanging "NEW" icon */}
-           <img src={newsign} className="absolute -top-6 -left-6 h-12 object-contain z-[110] transform -rotate-12" alt="" />
+           <img src={newsign} className="absolute -top-4 -left-4 w-10 h-10 object-contain z-[110] transform -rotate-12" alt="" />
            
            <div className="relative bg-white h-[60px] shadow-[10px_10px_0_rgba(0,0,0,0.5)] overflow-hidden">
               <div className="absolute top-0 left-0 right-0 h-[8px] bg-[#c4001a] z-10" />
               <div className="flex items-center h-full px-6 gap-5 pt-[8px]">
-                 <img src={icon3} className="h-9 object-contain" alt="" />
+                 <img src={icon3} className="h-9 w-auto object-contain" alt="" />
                  <span className="flex-1 font-[family-name:var(--font-bebas)] text-3xl text-black tracking-widest truncate uppercase">
                    {current.label}
                  </span>
-
-                 {/* Language Box on Status Bar */}
-                 {current.handle && (
-                   <div className="bg-[#c4001a] text-white px-4 py-1 font-[family-name:var(--font-bebas)] text-xl tracking-widest skew-x-[-15deg] shadow-[4px_4px_0_rgba(0,0,0,0.3)]">
-                      <span className="inline-block skew-x-[15deg] uppercase">{current.handle}</span>
-                   </div>
-                 )}
 
                  <div className="bg-black text-white px-6 py-2 flex items-center gap-3">
                     <span className="text-[#e8c100] font-[family-name:var(--font-bebas)] text-2xl">★</span>
@@ -117,30 +102,6 @@ export default function ProjectsP3({ src }) {
         </div>
       </div>
 
-      {revealed && <div className="sc-dim" />}
-      
-      {revealed && (
-        <div className={`sc-reveal-panel mounted`}>
-          <div className="sc-reveal-upper-bar">
-            {current.reveal.upper.map((line) => (
-              <div className="sc-reveal-upper-line" key={line}>{line}</div>
-            ))}
-          </div>
-          <div className="sc-reveal-lower-bar" onClick={() => window.open(current.href, "_blank")}>
-             GO TO REPOSITORY ◄
-          </div>
-          <div className="absolute top-[65%] left-10 right-10 text-black font-[family-name:var(--font-bebas)] text-2xl tracking-widest leading-relaxed">
-            {current.reveal.lower}
-          </div>
-        </div>
-      )}
-
-      {revealed && (
-        <div className="sc-main-portrait-shell mounted">
-          <img className="sc-main-portrait" src={CHARS[active % CHARS.length]} alt="" />
-        </div>
-      )}
-
       <div className="sc-root">
         {projects.map((item, i) => (
           <div
@@ -148,7 +109,7 @@ export default function ProjectsP3({ src }) {
             className={`sc-bar-outer${active === i ? " active" : ""}${mounted ? " mounted" : ""}`}
             style={{ transitionDelay: `${i * 80}ms` }}
             onMouseEnter={() => setActive(i)}
-            onClick={() => setRevealed(true)}
+            onClick={() => window.open(item.href, "_blank")}
           >
             <div className="sc-bar-red" />
             <div className="sc-bar">
@@ -179,9 +140,40 @@ export default function ProjectsP3({ src }) {
         ))}
       </div>
 
+      {/* Right Side Info Bars (Similar to Socials) */}
+      {mounted && (
+        <div 
+          className={`sc-info-bar-wrap scale-105`}
+          style={{ top: `200px`, right: `40px`, position: 'fixed', left: 'auto', width: '350px' }}
+        >
+          <div className="sc-info-bar bg-white rounded-lg p-1 shadow-xl">
+            <div className="flex items-center h-12 px-4 gap-4 bg-white rounded-md overflow-hidden">
+               {/* Colorful Language Box on the bar */}
+               <span 
+                 className="bg-[#c4001a] text-white px-4 py-0.5 border-l-[3px] border-white font-[family-name:var(--font-anton)] text-[18px] italic tracking-wider shadow-[4px_4px_0_rgba(0,0,0,0.2)] leading-none"
+                 style={{ clipPath: 'polygon(0% 0%, 100% 10%, 96% 100%, 4% 90%)' }}
+               >
+                 <span className="uppercase">{current.handle}</span>
+               </span>
+               <span className="flex-1 font-[family-name:var(--font-bebas)] text-black text-xl tracking-widest truncate uppercase">
+                 {current.label}
+               </span>
+               <div className="bg-[#c4001a] text-white px-4 py-1 font-[family-name:var(--font-bebas)] text-lg tracking-widest skew-x-[-12deg]">
+                  <span className="inline-block skew-x-[12deg]">OPEN</span>
+               </div>
+            </div>
+          </div>
+          
+          <div className="mt-4 bg-black/80 backdrop-blur-md p-6 border-l-4 border-[#c4001a] text-white font-[family-name:var(--font-bebas)] text-xl tracking-widest leading-relaxed">
+            <p className="opacity-60 text-sm mb-2 uppercase">Archive Description:</p>
+            {current.reveal.lower}
+          </div>
+        </div>
+      )}
+
       <div className={`sc-footer mounted`}>
         <div className="sc-footer-row"><span className="sc-footer-key">↑↓</span><span>SELECT</span></div>
-        <div className="sc-footer-row"><span className="sc-footer-key">↵</span><span>PROJECT INFO</span></div>
+        <div className="sc-footer-row"><span className="sc-footer-key">↵</span><span>VISIT REPOSITORY</span></div>
         <div className="sc-footer-row"><span className="sc-footer-key">ESC</span><span>BACK</span></div>
       </div>
 
@@ -189,9 +181,6 @@ export default function ProjectsP3({ src }) {
         .sc-root {
           position: absolute; inset: 0; z-index: 6; pointer-events: none;
           display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 6px;
-        }
-        .sc-dim {
-          position: absolute; inset: 0; z-index: 12; background: rgba(40, 45, 54, 0.68);
         }
         .sc-bar-outer {
           position: relative; transform: translateX(-100%); transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
@@ -229,29 +218,10 @@ export default function ProjectsP3({ src }) {
         .sc-stat-num { font-family: var(--font-bebas); font-size: 26px; color: #fff; }
         .sc-bar-outer.active .sc-stat-num { color: #111; }
 
-        .sc-reveal-panel {
-          position: absolute; top: 44vh; left: -6vw; width: 88vw; height: 60vh; z-index: 12;
-          background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(243,246,252,0.98) 100%);
-          clip-path: polygon(0 0, 100% 0, calc(100% - 88px) 100%, 0 100%);
-          transform: rotate(-20deg); transform-origin: left bottom;
-        }
-        .sc-reveal-upper-bar {
-          position: absolute; top: 10%; width: 100%; height: 40%; background: #000;
-          display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff;
-        }
-        .sc-reveal-upper-line { font-family: var(--font-anton); font-style: italic; font-size: 42px; letter-spacing: 2px; text-transform: uppercase; }
-        .sc-reveal-lower-bar {
-          position: absolute; top: 58%; right: 0; width: 48%; height: 15%; background: #c4001a;
-          display: flex; align-items: center; justify-content: center; color: #fff; cursor: pointer;
-          font-family: var(--font-bebas); font-size: 28px; letter-spacing: 2px;
+        .sc-info-bar {
+          background: #fff; border-radius: 7px; height: 100%; display: flex; align-items: center; padding: 0;
         }
 
-        .sc-main-portrait-shell {
-          position: absolute; top: 0; right: -3vw; z-index: 13; width: 43vw; height: 100vh; overflow: hidden;
-        }
-        .sc-main-portrait {
-          width: 100%; height: 100%; object-fit: cover; transform: skewX(-8deg);
-        }
         .sc-footer {
           position: fixed; bottom: 20px; right: 28px; display: flex; flex-direction: column; align-items: flex-end; gap: 5px; z-index: 14;
         }

@@ -78,11 +78,12 @@ export default function Socials({ src }) {
     <div id="menu-screen" className="relative w-full h-screen overflow-hidden bg-black">
       <video src={src} autoPlay loop playsInline className="absolute inset-0 w-full h-full object-cover opacity-60" />
       
-
-
       {/* Top Right Info Bar */}
       <div className="absolute top-24 right-10 z-[100] transition-all duration-300 transform scale-90 origin-top-right">
         <div className="relative min-w-[450px]">
+           {/* Hanging "NEW" icon */}
+           <img src={newsign} className="absolute -top-4 -left-4 w-10 h-10 object-contain z-[110] transform -rotate-12" alt="" />
+           
            <div className="relative bg-white h-[60px] shadow-[10px_10px_0_rgba(0,0,0,0.5)] overflow-hidden">
               <div className="absolute top-0 left-0 right-0 h-[8px] bg-[#c4001a] z-10" />
               <div className="flex items-center h-full px-6 gap-5 pt-[8px]">
@@ -110,8 +111,6 @@ export default function Socials({ src }) {
           >
             <div className="sc-bar-red" />
             <div className="sc-bar">
-              {/* Newsign inside the bar */}
-              <img src={newsign} className="absolute top-1 left-2 h-6 object-contain z-20 animate-bounce" alt="" />
               <img className="sc-char" src={CHARS[i]} alt="" />
               <div className="sc-bar-fill" />
               <div className="sc-bar-shade" />
@@ -143,17 +142,18 @@ export default function Socials({ src }) {
         <div
           key={`info-${active}-${i}`}
           className={`sc-info-bar-wrap ${activeInfoBar === i ? "scale-105" : "opacity-80"}`}
-          style={{ top: `${155 + i * 52}px` }}
+          style={{ top: `${200 + i * 65}px`, position: 'fixed', right: '40px', left: 'auto', width: '380px' }}
           onMouseEnter={() => setActiveInfoBar(i)}
           onClick={() => window.open(ITEMS[active].href, "_blank")}
         >
-          <div className="sc-info-bar">
-            <span className="sc-info-bar-text">{ITEMS[active].links[i]}</span>
-            <div className="ml-auto flex items-center gap-4 px-6">
-               <span className="bg-[#c4001a] text-white px-4 py-1 font-[family-name:var(--font-bebas)] text-xl tracking-[0.2em] skew-x-[-12deg] shadow-[4px_4px_0_rgba(0,0,0,0.4)]">
-                 <span className="inline-block skew-x-[12deg]">CLICK TO OPEN</span>
-               </span>
-            </div>
+          <div className="sc-info-bar bg-white rounded-lg p-1 shadow-xl h-14 flex items-center">
+             <div className="flex items-center h-full w-full px-4 gap-4 bg-white rounded-md overflow-hidden border-t-4 border-[#c4001a]">
+                <img src={current.barIcon} className="w-8 h-8 object-contain" alt="" />
+                <span className="sc-info-bar-text font-[family-name:var(--font-bebas)] text-black text-xl tracking-widest truncate">{ITEMS[active].links[i]}</span>
+                <div className="ml-auto bg-[#c4001a] text-white px-4 py-1 font-[family-name:var(--font-bebas)] text-lg tracking-widest skew-x-[-12deg]">
+                   <span className="inline-block skew-x-[12deg]">OPEN</span>
+                </div>
+             </div>
           </div>
         </div>
       ))}
@@ -200,19 +200,13 @@ export default function Socials({ src }) {
         .sc-bar-outer.active .sc-label { color: #111; }
         .sc-char {
           position: absolute; left: 110px; top: 0; height: 100%; z-index: 3;
-          clip-path: polygon(20px 0, 100% 0, calc(100% - 20px) 100%, 0 100%);
+          clip-path: polygon(20px 0%, 100% 0%, calc(100% - 20px) 100%, 0% 100%);
         }
         .sc-stats { display: flex; gap: 20px; padding-right: 20px; }
         .sc-stat-num { font-family: var(--font-bebas); font-size: 26px; color: #fff; }
         .sc-bar-outer.active .sc-stat-num { color: #111; }
         
-        .sc-info-bar-wrap {
-          position: fixed; right: 0; left: 65%; height: 46px; z-index: 50;
-        }
-        .sc-info-bar {
-          background: #fff; border-radius: 7px; height: 100%; display: flex; align-items: center; padding: 0 15px;
-        }
-        .sc-info-bar-text { font-family: var(--font-bebas); color: #111; font-size: 20px; flex: 1; }
+        .sc-info-bar-wrap { z-index: 50; }
 
         .sc-footer {
           position: fixed; bottom: 20px; right: 28px; display: flex; flex-direction: column; align-items: flex-end; gap: 5px; z-index: 14;
