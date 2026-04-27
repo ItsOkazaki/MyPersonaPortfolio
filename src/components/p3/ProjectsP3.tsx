@@ -89,17 +89,29 @@ export default function ProjectsP3({ src }) {
 
       {/* Top Right Info Bar */}
       <div className="absolute top-24 right-10 z-[100] transition-all duration-300 transform scale-90 origin-top-right">
-        <div className="relative bg-white min-w-[450px] h-[60px] shadow-[10px_10px_0_rgba(0,0,0,0.5)] overflow-hidden">
-           <div className="absolute top-0 left-0 right-0 h-[8px] bg-[#c4001a] z-10" />
-           <div className="flex items-center h-full px-6 gap-5 pt-[8px]">
-              <img src={newsign} className="h-7 object-contain" alt="" />
-              <img src={icon3} className="h-9 object-contain" alt="" />
-              <span className="flex-1 font-[family-name:var(--font-bebas)] text-3xl text-black tracking-widest truncate uppercase">
-                {current.label}
-              </span>
-              <div className="bg-black text-white px-6 py-2 flex items-center gap-3">
-                 <span className="text-[#e8c100] font-[family-name:var(--font-bebas)] text-2xl">★</span>
-                 <span className="font-[family-name:var(--font-anton)] text-2xl italic leading-none">{current.stars}</span>
+        <div className="relative min-w-[450px]">
+           {/* Hanging "NEW" icon */}
+           <img src={newsign} className="absolute -top-6 -left-6 h-12 object-contain z-[110] transform -rotate-12" alt="" />
+           
+           <div className="relative bg-white h-[60px] shadow-[10px_10px_0_rgba(0,0,0,0.5)] overflow-hidden">
+              <div className="absolute top-0 left-0 right-0 h-[8px] bg-[#c4001a] z-10" />
+              <div className="flex items-center h-full px-6 gap-5 pt-[8px]">
+                 <img src={icon3} className="h-9 object-contain" alt="" />
+                 <span className="flex-1 font-[family-name:var(--font-bebas)] text-3xl text-black tracking-widest truncate uppercase">
+                   {current.label}
+                 </span>
+
+                 {/* Language Box on Status Bar */}
+                 {current.handle && (
+                   <div className="bg-[#c4001a] text-white px-4 py-1 font-[family-name:var(--font-bebas)] text-xl tracking-widest skew-x-[-15deg] shadow-[4px_4px_0_rgba(0,0,0,0.3)]">
+                      <span className="inline-block skew-x-[15deg] uppercase">{current.handle}</span>
+                   </div>
+                 )}
+
+                 <div className="bg-black text-white px-6 py-2 flex items-center gap-3">
+                    <span className="text-[#e8c100] font-[family-name:var(--font-bebas)] text-2xl">★</span>
+                    <span className="font-[family-name:var(--font-anton)] text-2xl italic leading-none">{current.stars}</span>
+                 </div>
               </div>
            </div>
         </div>
@@ -149,16 +161,6 @@ export default function ProjectsP3({ src }) {
                    <div className="sc-label truncate w-full text-center">{item.label}</div>
                 </div>
                 <div className="sc-stats flex items-center gap-6">
-                  <div className="flex gap-2 mr-6">
-                    {item.handle && (
-                      <span 
-                        className="bg-[#c4001a] text-white px-4 py-0.5 border-l-[3px] border-white font-[family-name:var(--font-anton)] text-[18px] italic tracking-wider shadow-[4px_4px_0_rgba(0,0,0,0.8)] leading-none"
-                        style={{ clipPath: 'polygon(0% 0%, 100% 10%, 96% 100%, 4% 90%)' }}
-                      >
-                        <span className="uppercase">{item.handle}</span>
-                      </span>
-                    )}
-                  </div>
                   {item.stats.map(s => (
                     <div key={s.tag} className="flex flex-col items-start gap-1">
                       <div className="flex items-center gap-2">
@@ -166,7 +168,7 @@ export default function ProjectsP3({ src }) {
                         <span className="sc-stat-num font-bold">{s.value}</span>
                       </div>
                       <div className="w-16 h-1 bg-black/30 overflow-hidden">
-                        <div className="h-full bg-white" style={{ width: '60%', backgroundColor: s.color }} />
+                        <div className="h-full bg-white transition-all duration-500" style={{ width: '70%', backgroundColor: s.color }} />
                       </div>
                     </div>
                   ))}

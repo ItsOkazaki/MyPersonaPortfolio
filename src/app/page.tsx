@@ -29,6 +29,13 @@ export default function Home() {
           router.push(`/${page}`);
         }
       }} />
+
+      {/* Development Credit */}
+      <div className="absolute bottom-10 left-10 z-30 pointer-events-none">
+        <p className="font-[family-name:var(--font-anton)] text-2xl text-white italic opacity-40 uppercase tracking-[0.3em]">
+          DEVELOPED BY RAHMANI MOSTAPHA
+        </p>
+      </div>
     </div>
   );
 }

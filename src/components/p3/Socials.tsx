@@ -82,17 +82,18 @@ export default function Socials({ src }) {
 
       {/* Top Right Info Bar */}
       <div className="absolute top-24 right-10 z-[100] transition-all duration-300 transform scale-90 origin-top-right">
-        <div className="relative bg-white min-w-[450px] h-[60px] shadow-[10px_10px_0_rgba(0,0,0,0.5)] overflow-hidden">
-           <div className="absolute top-0 left-0 right-0 h-[8px] bg-[#c4001a] z-10" />
-           <div className="flex items-center h-full px-6 gap-5 pt-[8px]">
-              <img src={newsign} className="h-7 object-contain" alt="" />
-              <img src={icon1} className="h-9 object-contain" alt="" />
-              <span className="flex-1 font-[family-name:var(--font-bebas)] text-3xl text-black tracking-widest truncate uppercase">
-                {current.label}
-              </span>
-              <div className="bg-black text-white px-6 py-2 flex items-center gap-3">
-                 <span className="text-[#4a8fff] font-[family-name:var(--font-bebas)] text-2xl">🌐</span>
-                 <span className="font-[family-name:var(--font-anton)] text-2xl italic leading-none">{current.handle}</span>
+        <div className="relative min-w-[450px]">
+           <div className="relative bg-white h-[60px] shadow-[10px_10px_0_rgba(0,0,0,0.5)] overflow-hidden">
+              <div className="absolute top-0 left-0 right-0 h-[8px] bg-[#c4001a] z-10" />
+              <div className="flex items-center h-full px-6 gap-5 pt-[8px]">
+                 <img src={icon1} className="h-9 object-contain" alt="" />
+                 <span className="flex-1 font-[family-name:var(--font-bebas)] text-3xl text-black tracking-widest truncate uppercase">
+                   {current.label}
+                 </span>
+                 <div className="bg-black text-white px-6 py-2 flex items-center gap-3">
+                    <span className="text-[#4a8fff] font-[family-name:var(--font-bebas)] text-2xl">🌐</span>
+                    <span className="font-[family-name:var(--font-anton)] text-2xl italic leading-none">{current.handle}</span>
+                 </div>
               </div>
            </div>
         </div>
@@ -109,6 +110,8 @@ export default function Socials({ src }) {
           >
             <div className="sc-bar-red" />
             <div className="sc-bar">
+              {/* Newsign inside the bar */}
+              <img src={newsign} className="absolute top-1 left-2 h-6 object-contain z-20 animate-bounce" alt="" />
               <img className="sc-char" src={CHARS[i]} alt="" />
               <div className="sc-bar-fill" />
               <div className="sc-bar-shade" />
